@@ -24,6 +24,7 @@ class CreateArticlesTable extends Migration
             $table->string('category');
             $table->string('image')->nullable();
             $table->string('external_image')->nullable();
+            $table->boolean('selected')->default(false);
             $table->timestamps();
         });
     }

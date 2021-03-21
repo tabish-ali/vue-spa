@@ -12,6 +12,7 @@
                     v-model="article.title"
                     class="form-control"
                 />
+                <span class="errors">{{ errors.title }}</span>
             </div>
             <div class="d-md-flex justify-content-between px-md-1">
                 <div class="form-group w-100">
@@ -29,6 +30,8 @@
                         v-model="article.youtubeId"
                         class="form-control"
                     />
+
+                    <span class="errors">{{ errors.youtubeId }}</span>
                 </div>
                 <div class="form-group w-100 px-md-1">
                     <label class="form-label" for="">Select Category</label>
@@ -81,24 +84,17 @@
                     />
                 </div>
             </div>
-            <div class="form-group mt-3 mb-5">
-                <button
-                    @click="saveArticle"
-                    class="btn btn-dark btn-lg btn-block"
-                >
+            <hr />
+            <div class="form-group mt-3 mb-5 d-flex justify-content-center">
+                <button @click="saveArticle" class="btn shadow btn-dark">
                     <b-spinner
                         v-if="uploading"
                         type="grow"
                         label="Spinning"
                     ></b-spinner>
-                    Save
+                    Add Article
                 </button>
             </div>
-            <b-alert v-if="errors.length" class="mb-5" show variant="danger">
-                <div v-for="error in errors" :key="error">
-                    <span class="errors">{{ error }}</span>
-                </div>
-            </b-alert>
         </form>
     </div>
 </template>
@@ -121,7 +117,7 @@ export default {
                 image: '',
                 externalImage: '',
             },
-            errors: [],
+            errors: {},
             uploading: false,
         }
     },
@@ -133,7 +129,7 @@ export default {
     methods: {
         async saveArticle() {
             this.validateData()
-            if (this.errors.length === 0) {
+            if (Object.keys(this.errors).length === 0) {
                 try {
                     var formData = new FormData()
                     formData.append('image', this.image)
@@ -144,10 +140,15 @@ export default {
                         formData
                     )
                     this.uploading = false
-                    this.$toast.success('Article added successfully', {
-                        timeout: 3000,
-                        position: POSITION.BOTTOM_CENTER,
-                    })
+
+                    let toast = this.$toasted.show(
+                        'Article added successfully !!',
+                        {
+                            type: 'success',
+                            position: 'top-center',
+                            duration: 5000,
+                        }
+                    )
                 } catch (error) {
                     console.log(error)
                 }
@@ -163,15 +164,18 @@ export default {
         validateData() {
             this.errors = []
             if (!this.article.title) {
-                this.errors.push('Please enter the title.')
+                this.errors.title = 'Please enter the title.'
             }
             // if (!this.article.content) {
             //     this.errors.push('please enter the content.')
             // }
             if (!this.article.youtubeId) {
-                this.errors.push('Please enter the Youtube Id.')
+                this.errors.youtubeId = 'Please enter the Youtube Id.'
             }
         },
+    },
+    created() {
+        document.body.style.overflow = 'hidden'
     },
 }
 </script>
@@ -191,6 +195,7 @@ body {
     color: #2d2d2d;
 }
 .errors {
-    font-size: 14px;
+    font-size: 12px;
+    color: crimson;
 }
 </style>

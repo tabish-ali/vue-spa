@@ -32,7 +32,7 @@
                             <div
                                 class="title-container mt-2 my-md-0 d-flex items-start"
                             >
-                                <h6>{{ article.title.substr(0, 30) }}...</h6>
+                                <h6>{{ article.title.substr(0, 50) }}...</h6>
                             </div>
                             <div class="d-flex align-items-end h-100">
                                 <small

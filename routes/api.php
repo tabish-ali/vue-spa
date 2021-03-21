@@ -33,6 +33,8 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::patch('settings/password', [PasswordController::class, 'update']);
     Route::post('post-article', [ArticlesController::class, 'postArticle']);
     Route::get('get-articles/', [ArticlesController::class, 'getArticles']);
+    Route::post('delete-articles/', [ArticlesController::class, 'deleteArticles']);
+    Route::post('delete-article/', [ArticlesController::class, 'deleteArticle']);
 });
 
 Route::get('index/', [ArticlesController::class, 'index']);

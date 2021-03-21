@@ -28,11 +28,10 @@
     "vform": "^1.0.1",
     "vue": "^2.6.12",
     "vue-i18n": "^8.22.1",
-    "vue-infinite-loading": "^2.4.5",
     "vue-meta": "^2.4.0",
     "vue-router": "^3.4.8",
     "vue-scroll-loader": "^2.2.0",
-    "vue-toastification": "^1.7.11",
+    "vue-toasted": "^1.1.28",
     "vuex": "^3.5.1",
     "vuex-router-sync": "^5.0.0"
   },

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Article;
 use Illuminate\Http\Request;
 use Intervention\Image\ImageManagerStatic as Image;
+use Monolog\Handler\PushoverHandler;
 
 class ArticlesController extends Controller
 {
@@ -54,5 +55,25 @@ class ArticlesController extends Controller
         // $articles = Article::skip($offset-1)->take(($page * $per_page))->get();
         $articles = Article::paginate(2);
         return response()->json($articles);
+    }
+
+    public function deleteArticles(Request $request)
+    {
+
+        foreach ($request->articles as $article) {
+            $id = $article['id'];
+            $deleted_article = Article::find($id);
+            if ($deleted_article)
+                $deleted_article->delete();
+        }
+        return ['success'];
+    }
+
+    public function deleteArticle(Request $request)
+    {
+        $id = $request->id;
+        $article = Article::find($id);
+        $article->delete();
+        return ["success"];
     }
 }
