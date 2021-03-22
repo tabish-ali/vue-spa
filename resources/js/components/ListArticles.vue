@@ -1,7 +1,7 @@
 <template>
     <div class="w-100">
         <div class="w-100 p-2">
-            <button class="btn-sm btn-danger btn" @click="deleteSelected">
+            <button class="btn-sm btn-danger btn" @click="deleteArticles">
                 Delete
             </button>
         </div>
@@ -36,7 +36,10 @@
                         <td class="align-middle">{{ article.title }}</td>
                         <td class="align-middle">{{ article.created_at }}</td>
                         <td>
-                            <span class="border p-1 edit-icon">
+                            <span
+                                class="border p-1 edit-icon"
+                                @click="editArticle(article)"
+                            >
                                 <svg
                                     class="icons "
                                     xmlns="http://www.w3.org/2000/svg"
@@ -105,6 +108,10 @@ export default {
             this.articles = response.data
         },
 
+        editArticle(article) {
+            this.$emit('editArticle', article)
+        },
+
         pushSelected($event, article) {
             if ($event.target.checked) {
                 this.selectedArticles.push(article)
@@ -126,7 +133,7 @@ export default {
         },
 
         deleteSingle(article, index) {
-            this.$toasted.show('Do you want to delete selected articles?', {
+            this.$toasted.show('Do you want to delete selected article?', {
                 position: 'top-center',
                 action: [
                     {
@@ -143,6 +150,27 @@ export default {
                             this.articles.data.splice(index, 1)
 
                             this.deleteArticle(article)
+                        },
+                    },
+                ],
+            })
+        },
+        deleteArticles() {
+            this.$toasted.show('Do you want to delete selected articles?', {
+                position: 'top-center',
+                action: [
+                    {
+                        text: 'Cancel',
+                        onClick: (e, toastObj) => {
+                            toastObj.goAway(0)
+                            return
+                        },
+                    },
+                    {
+                        text: 'Proceed',
+                        onClick: (e, toastObj) => {
+                            toastObj.goAway(0)
+                            this.deleteSelected()
                         },
                     },
                 ],
@@ -166,6 +194,7 @@ export default {
                     })
                 })
         },
+
         async deleteSelected() {
             if (this.selectedArticles.length) {
                 const obj = this

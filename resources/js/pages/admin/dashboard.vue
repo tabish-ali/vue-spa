@@ -1,5 +1,5 @@
 <template>
-    <div class="dashboard h-100 w-100 d-flex">
+    <div class="dashboard h-100 w-100 d-flex" v-if="isAdmin">
         <div class="fill d-inline-block bg-dark side-menu rounded  text-white">
             <div class="px-2 py-3 d-flex align-middle">
                 <img class="logo" src="/assets/logo.png" alt="" />
@@ -57,28 +57,50 @@
             <create-article @click="switchMenu(listArticles)" />
         </div>
         <div class="overflow-auto w-100" v-if="menu.listArticles">
-            <list-articles />
+            <list-articles @editArticle="setEditedArticle" />
+        </div>
+        <div class="overflow-auto w-100" v-if="menu.editArticle">
+            <edit-article :selectedArticle="editedArtcle" />
+        </div>
+        <div
+            class="d-flex justify-content-center align-items-center"
+            v-if="!isAdmin"
+        >
+            <h3 class="text-danger bg-white shadow-sm p-2 rounded">
+                Sorry you don't have permission to access dashboard.
+            </h3>
         </div>
     </div>
 </template>
 
 <script>
 import CreateArticle from '../../components/CreateArticle.vue'
+import EditArticle from '../../components/EditArticle.vue'
 import ListArticles from '../../components/ListArticles.vue'
+import axios from 'axios'
 
 export default {
-    components: { CreateArticle, ListArticles },
+    components: { CreateArticle, ListArticles, EditArticle },
     middleware: 'auth',
     data() {
         return {
             menu: {
                 addArticles: false,
                 listArticles: true,
+                editArticle: false,
             },
+            isAdmin: false,
+            editedArtcle: {},
             activeMenu: 'listArticles',
         }
     },
     methods: {
+        setEditedArticle(article) {
+            this.editedArtcle = article
+            this.menu.editArticle = true
+            this.menu.listArticles = false
+            this.menu.addArticles = false
+        },
         switchMenu(selected) {
             for (var key in this.menu) {
                 if (this.menu.hasOwnProperty(key) && selected === key) {
@@ -90,7 +112,10 @@ export default {
             }
         },
     },
-    created() {},
+    async created() {
+        const response = await axios.get('api/user')
+        this.isAdmin = response.data.isAdmin
+    },
 }
 </script>
 

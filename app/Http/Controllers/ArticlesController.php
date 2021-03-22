@@ -49,12 +49,15 @@ class ArticlesController extends Controller
     // used for display articles on home page
     public function index()
     {
-        // $page = $_GET['page'];
-        // $per_page = $_GET['per_page'];
-        // $offset = ($page - 1) * $per_page + 1;
-        // $articles = Article::skip($offset-1)->take(($page * $per_page))->get();
         $articles = Article::paginate(2);
         return response()->json($articles);
+    }
+
+    public function getArticle()
+    {
+        $id = $_GET['id'];
+        $article = Article::find($id);
+        return response()->json($article);
     }
 
     public function deleteArticles(Request $request)

@@ -38,6 +38,7 @@ Route::group(['middleware' => 'auth:api'], function () {
 });
 
 Route::get('index/', [ArticlesController::class, 'index']);
+Route::get('get-article/', [ArticlesController::class, 'getArticle']);
 
 Route::group(['middleware' => 'guest:api'], function () {
     Route::post('login', [LoginController::class, 'login']);

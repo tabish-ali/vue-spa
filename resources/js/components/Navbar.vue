@@ -2,7 +2,7 @@
     <nav class="navbar navbar-expand-lg navbar-light bg-white">
         <div class="container-fluid">
             <router-link
-                :to="{ name: user ? 'home' : 'welcome' }"
+                :to="{ name: user ? 'home' : 'home' }"
                 class="navbar-brand"
             >
                 {{ appName }}
@@ -105,11 +105,16 @@ export default {
 
     data: () => ({
         appName: window.config.appName,
+        isAdmin: false,
     }),
 
     computed: mapGetters({
         user: 'auth/user',
     }),
+
+    mounted() {
+        if (this.user) this.isAdmin = this.user.isAdmin
+    },
 
     methods: {
         async logout() {

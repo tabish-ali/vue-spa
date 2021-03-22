@@ -32,7 +32,20 @@
                             <div
                                 class="title-container mt-2 my-md-0 d-flex items-start"
                             >
-                                <h6>{{ article.title.substr(0, 50) }}...</h6>
+                                <h6 @click="showArticle(article)">
+                                    {{ article.title.substr(0, 50) }}...
+                                </h6>
+
+                                <!-- <router-link
+                                    :to="{
+                                        name: 'article',
+                                        params: { shownArticle: article },
+                                    }"
+                                >
+                                    <h6>
+                                        {{ article.title.substr(0, 50) }}...
+                                    </h6>
+                                </router-link> -->
                             </div>
                             <div class="d-flex align-items-end h-100">
                                 <small
@@ -64,12 +77,12 @@
 
 <script>
 import axios from 'axios'
+import router from '../router'
 export default {
-    middleware: 'auth',
-
     metaInfo() {
         return { title: this.$t('home') }
     },
+
     data() {
         return {
             pageSize: 5,
@@ -80,6 +93,10 @@ export default {
     },
 
     methods: {
+        showArticle(article) {
+            router.push({ path: 'article', query: { id: article.id } })
+        },
+
         //getting tags from string of tags
         getTags() {
             this.articles.forEach(article => {
