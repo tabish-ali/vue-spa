@@ -12,7 +12,10 @@ class ArticlesController extends Controller
     public function postArticle(Request $request)
     {
         //saving image
-        $article_image_name = ArticlesController::getImage($request->image);
+        if ($request->hasFile('image'))
+            $article_image_name = ArticlesController::getImage($request->image);
+        else
+            $article_image_name = "";
         // getting youtube link and tag from it to get the thumbnail 
         $article = json_decode($request->article);
         $link = $article->link;
@@ -39,14 +42,14 @@ class ArticlesController extends Controller
     // used for display articles in listarticles.vue table
     public function getArticles()
     {
-        $articles = Article::paginate(10);
+        $articles = Article::orderBy('id', 'desc')->paginate(10);
         return response()->json($articles);
     }
 
     // used for display articles on home page
     public function index()
     {
-        $articles = Article::paginate(2);
+        $articles = Article::orderBy('id', 'desc')->paginate(3);
         return response()->json($articles);
     }
 
@@ -63,8 +66,10 @@ class ArticlesController extends Controller
         foreach ($request->articles as $article) {
             $id = $article['id'];
             $deleted_article = Article::find($id);
-            if ($deleted_article)
+            if ($deleted_article) {
+                ArticlesController::deleteImage($deleted_article->image);
                 $deleted_article->delete();
+            }
         }
         return ['success'];
     }
@@ -73,6 +78,7 @@ class ArticlesController extends Controller
     {
         $id = $request->id;
         $article = Article::find($id);
+        ArticlesController::deleteImage($article->image);
         $article->delete();
         return ["success"];
     }
@@ -80,13 +86,12 @@ class ArticlesController extends Controller
     public static function getLink($link)
     {
         if ($link) {
+            $youtube_id = "";
+            $youtube_img = "";
             parse_str(parse_url($link, PHP_URL_QUERY), $vars_array);
             if (array_key_exists('v', $vars_array)) {
                 $youtube_id = $vars_array['v'];
                 $youtube_img = "https://img.youtube.com/vi/" . $youtube_id . "/0.jpg";
-            } else {
-                $youtube_id = "";
-                $youtube_img = "";
             }
         }
         return ['youtube_id' => $youtube_id, 'youtube_img' => $youtube_img];
@@ -119,13 +124,8 @@ class ArticlesController extends Controller
         $db_article->content = $article->content;
         $db_article->category = $article->category;
 
-        // deleting old image
-        try {
-            $path = storage_path('app');
-            $old_image_path = $path . '/public/uploads/' . $db_article->image;
-            unlink($old_image_path);
-        } catch (Exception $e) {
-        }
+        ArticlesController::deleteImage($db_article->image);
+
 
         if ($request->hasFile(('image'))) {
             $article_image_name = ArticlesController::getImage($request->image);
@@ -139,5 +139,16 @@ class ArticlesController extends Controller
         $db_article->save();
 
         return ['message' => 'success'];
+    }
+
+    public static function deleteImage($image)
+    {
+        // deleting old image
+        try {
+            $path = storage_path('app');
+            $old_image_path = $path . '/public/uploads/' . $image;
+            unlink($old_image_path);
+        } catch (Exception $e) {
+        }
     }
 }

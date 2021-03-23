@@ -20,9 +20,13 @@
             <div class="title mb-4">
                 {{ title }}
             </div>
-
             <div class="links">
-                Articles site with youtube link
+                <router-link
+                    :to="{ name: 'home' }"
+                    class="p-4 border  shadow-sm bg-white block"
+                >
+                    Home
+                </router-link>
             </div>
         </div>
     </div>
@@ -30,8 +34,10 @@
 
 <script>
 import { mapGetters } from 'vuex'
+import SiteFooter from '../components/SiteFooter.vue'
 
 export default {
+    components: { SiteFooter },
     layout: 'basic',
 
     metaInfo() {

@@ -34,7 +34,7 @@
                         value="article.youtube_id"
                     />
 
-                    <span class="errors">{{ errors.youtubeId }}</span>
+                    <span class="errors">{{ errors.link }}</span>
                 </div>
                 <div class="form-group w-100 px-md-1">
                     <label class="form-label" for="">Select Category</label>
@@ -125,28 +125,40 @@ export default {
         this.article = this.selectedArticle
     },
     methods: {
+        validateData() {
+            this.errors = []
+            if (!this.article.title) {
+                this.errors.title = 'Please enter the title.'
+            }
+            if (!this.article.link) {
+                this.errors.link = 'Please enter the Link.'
+            }
+        },
         async updateArticle() {
-            try {
-                this.loading = true
-                var formData = new FormData()
-                formData.append('image', this.article.image)
-                formData.append('article', JSON.stringify(this.article))
-                console.log(this.article)
-                const response = await axios.post(
-                    'api/update-article',
-                    formData
-                )
-                this.uploading = false
-                let toast = this.$toasted.show(
-                    'Article updated successfully !!',
-                    {
-                        type: 'success',
-                        position: 'top-center',
-                        duration: 5000,
-                    }
-                )
-            } catch (err) {
-                console.log(err)
+            this.validateData()
+            if (Object.keys(this.errors).length === 0) {
+                try {
+                    this.loading = true
+                    var formData = new FormData()
+                    formData.append('image', this.article.image)
+                    formData.append('article', JSON.stringify(this.article))
+                    console.log(this.article)
+                    const response = await axios.post(
+                        'api/update-article',
+                        formData
+                    )
+                    this.uploading = false
+                    let toast = this.$toasted.show(
+                        'Article updated successfully !!',
+                        {
+                            type: 'success',
+                            position: 'top-center',
+                            duration: 5000,
+                        }
+                    )
+                } catch (err) {
+                    console.log(err)
+                }
             }
         },
 
@@ -159,4 +171,9 @@ export default {
 }
 </script>
 
-<style></style>
+<style>
+.errors {
+    font-size: 12px;
+    color: crimson;
+}
+</style>

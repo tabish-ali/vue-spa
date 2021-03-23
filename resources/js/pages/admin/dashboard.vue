@@ -46,10 +46,32 @@
                             stroke-linecap="round"
                             stroke-linejoin="round"
                             stroke-width="2"
+                            d="M4 6h16M4 10h16M4 14h16M4 18h16"
+                        />
+                    </svg>
+
+                    <span class="d-sm-inline d-none">List Article</span>
+                </div>
+                <div
+                    class="px-2 py-2 items"
+                    @click="switchMenu('categories')"
+                    :class="{ selected: menu.categories }"
+                >
+                    <svg
+                        class="dash-icons"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                    >
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
                             d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"
                         />
                     </svg>
-                    <span class="d-sm-inline d-none">List Article</span>
+                    <span class="d-sm-inline d-none">Categories</span>
                 </div>
             </div>
         </div>
@@ -61,6 +83,9 @@
         </div>
         <div class="overflow-auto w-100" v-if="menu.editArticle">
             <edit-article :selectedArticle="editedArtcle" />
+        </div>
+        <div class="overflow-auto w-100" v-if="menu.categories">
+            <categories />
         </div>
         <div
             class="d-flex justify-content-center align-items-center"
@@ -77,21 +102,26 @@
 import CreateArticle from '../../components/CreateArticle.vue'
 import EditArticle from '../../components/EditArticle.vue'
 import ListArticles from '../../components/ListArticles.vue'
+import Categories from '../../components/Categories.vue'
 import axios from 'axios'
 
 export default {
-    components: { CreateArticle, ListArticles, EditArticle },
+    components: { CreateArticle, ListArticles, EditArticle, Categories },
     middleware: 'auth',
+    metaInfo() {
+        return { title: this.$t('Dashboard') }
+    },
     data() {
         return {
             menu: {
-                addArticles: false,
-                listArticles: true,
+                addArticles: true,
+                listArticles: false,
                 editArticle: false,
+                categories: false,
             },
             isAdmin: false,
             editedArtcle: {},
-            activeMenu: 'listArticles',
+            activeMenu: 'addArticles',
         }
     },
     methods: {
@@ -100,6 +130,7 @@ export default {
             this.menu.editArticle = true
             this.menu.listArticles = false
             this.menu.addArticles = false
+            this.menu.categories = false
         },
         switchMenu(selected) {
             for (var key in this.menu) {
@@ -115,6 +146,8 @@ export default {
     async created() {
         const response = await axios.get('api/user')
         this.isAdmin = response.data.isAdmin
+        document.getElementById('child-container').classList.add('h-100')
+        document.getElementById('footer').style.display = 'none'
     },
 }
 </script>

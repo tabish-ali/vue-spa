@@ -1,7 +1,11 @@
 <template>
     <div class="w-100">
         <div class="w-100 p-2">
-            <button class="btn-sm btn-danger btn" @click="deleteArticles">
+            <button
+                :disabled="!selectedArticles.length > 0"
+                class="btn-sm btn-danger btn"
+                @click="deleteArticles"
+            >
                 Delete
             </button>
         </div>
@@ -17,6 +21,7 @@
                             />
                         </th>
                         <th scope="col">Title</th>
+                        <th scope="col">Category</th>
                         <th scope="col">Date</th>
                         <th scope="col">Actions</th>
                     </tr>
@@ -34,6 +39,7 @@
                             />
                         </th>
                         <td class="align-middle">{{ article.title }}</td>
+                        <td class="align-middle">{{ article.category }}</td>
                         <td class="align-middle">{{ article.created_at }}</td>
                         <td>
                             <span
@@ -177,7 +183,6 @@ export default {
             })
         },
         async deleteArticle(article) {
-            console.log(article)
             const obj = this
             const response = await axios
                 .post('api/delete-article/', {
@@ -189,7 +194,7 @@ export default {
                 .then(function() {
                     obj.$toasted.show('Deleted !!', {
                         type: 'primary',
-                        position: 'top-right',
+                        position: 'top-center',
                         duration: 5000,
                     })
                 })

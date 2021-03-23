@@ -8,6 +8,7 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\Auth\UserController;
 use App\Http\Controllers\Auth\VerificationController;
+use App\Http\Controllers\CategoriesController;
 use App\Http\Controllers\Settings\PasswordController;
 use App\Http\Controllers\Settings\ProfileController;
 use App\Models\Article;
@@ -36,6 +37,11 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::post('delete-articles/', [ArticlesController::class, 'deleteArticles']);
     Route::post('delete-article/', [ArticlesController::class, 'deleteArticle']);
     Route::post('update-article/', [ArticlesController::class, 'updateArticle']);
+    Route::get('get-categories/', [CategoriesController::class, 'getCategories']);
+    Route::get('get-categories-dropdown/', [CategoriesController::class, 'getCategoriesDropdown']);
+    Route::post('delete-category/', [CategoriesController::class, 'deleteCategory']);
+    Route::post('delete-categories/', [CategoriesController::class, 'deleteCategories']);
+    Route::post('add-category/', [CategoriesController::class, 'addCategory']);
 });
 
 Route::get('index/', [ArticlesController::class, 'index']);

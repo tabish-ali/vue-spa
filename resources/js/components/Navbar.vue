@@ -1,6 +1,6 @@
 <template>
     <nav class="navbar navbar-expand-lg navbar-light bg-white">
-        <div class="container-fluid">
+        <div class="container-fluid mx-2">
             <router-link
                 :to="{ name: user ? 'home' : 'home' }"
                 class="navbar-brand"
@@ -21,7 +21,6 @@
 
             <div id="navbarToggler" class="collapse navbar-collapse">
                 <ul class="navbar-nav">
-                    <locale-dropdown />
                     <router-link
                         :to="{ name: 'admin.dashboard' }"
                         class="nav-link"
@@ -34,7 +33,7 @@
                     <!-- Authenticated -->
                     <li v-if="user" class="nav-item dropdown">
                         <a
-                            class="nav-link dropdown-toggle text-dark"
+                            class="nav-link dropdown-toggle  text-dark"
                             href="#"
                             role="button"
                             data-toggle="dropdown"
@@ -47,7 +46,7 @@
                             />
                             {{ user.name }}
                         </a>
-                        <div class="dropdown-menu">
+                        <div class="dropdown-menu dropdown-menu-left">
                             <router-link
                                 :to="{ name: 'settings.profile' }"
                                 class="dropdown-item pl-3"

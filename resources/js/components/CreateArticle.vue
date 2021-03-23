@@ -34,11 +34,11 @@
                 </div>
                 <div class="form-group w-100 px-md-1">
                     <label class="form-label" for="">Select Category</label>
-                    <input
-                        type="text"
+                    <b-form-select
                         v-model="article.category"
-                        class="form-control"
-                    />
+                        :options="categories"
+                    ></b-form-select>
+
                     <span class="errors">{{ errors.category }}</span>
                 </div>
             </div>
@@ -109,6 +109,8 @@ export default {
                 category: '',
                 image: '',
             },
+            selectedCategory: '',
+            categories: [],
             errors: {},
             uploading: false,
         }
@@ -116,6 +118,7 @@ export default {
 
     mounted() {
         document.body.style.overflow = 'hidden'
+        this.getCategories()
     },
 
     methods: {
@@ -146,6 +149,17 @@ export default {
                 }
             }
         },
+        async getCategories() {
+            const obj = this
+            const response = await axios
+                .get('api/get-categories-dropdown/')
+                .catch(function(error) {
+                    console.log(error)
+                })
+                .then(function(response) {
+                    obj.categories = response.data
+                })
+        },
 
         getImage(e) {
             var files = e.target.files
@@ -157,9 +171,7 @@ export default {
             if (!this.article.title) {
                 this.errors.title = 'Please enter the title.'
             }
-            if (!this.article.category) {
-                this.errors.category = 'Please select category.'
-            }
+
             if (!this.article.link) {
                 this.errors.link = 'Please enter the Link.'
             }

@@ -21,9 +21,9 @@ class CreateArticlesTable extends Migration
             $table->string('link', 1000)->default('#');
             $table->string('youtube_img');
             $table->longText('content');
-            $table->string('category');
+            $table->string('category')->default('uncategorized');
             $table->string('image')->nullable();
-            $table->boolean('selected')->default(false);
+            $table->boolean('selected')->default(0);
             $table->timestamps();
         });
     }
