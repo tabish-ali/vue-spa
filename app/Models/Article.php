@@ -16,14 +16,13 @@ class Article extends Model
         'content',
         'image',
         'category',
-        'external_image',
-        'youtube_link',
+        'link',
         'youtube_img',
     ];
 
     public function getCreatedAtAttribute($value)
     {
-        $newDate = date("F j, Y, g:i a", strtotime($value));
+        $newDate = date("F j, Y", strtotime($value));
         return $newDate;
     }
 }

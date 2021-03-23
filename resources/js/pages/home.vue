@@ -8,60 +8,60 @@
         </router-link>
       </div>
     </card> -->
-        <div class="mt-4">
-            <div class="card">
+        <div class="mt-4 d-flex justify-content-center">
+            <div class="card p-0 col-sm-6 col-md-8 col-12">
                 <div class="card-header">
                     Articles
                 </div>
                 <div class="card-body">
-                    <div
-                        class="row py-2 border-bottom mb-2 py-1 px-3"
+                    <a
+                        class="row py-2 border-bottom mb-2 px-3 py-2 article"
                         v-for="article in articles"
                         :key="article.id"
+                        :href="article.link"
                     >
                         <div class="d-flex">
-                            <a :href="article.youtube_link" target="__blank">
-                                <img
-                                    class="thumbnail"
-                                    :src="article.youtube_img"
-                                    alt=""
-                                />
-                            </a>
+                            <img
+                                class="thumbnail"
+                                v-if="article.youtube_img"
+                                :src="article.youtube_img"
+                                alt=""
+                            />
+                            <img
+                                class="thumbnail"
+                                :src="'storage/uploads/' + article.image"
+                                v-else
+                                alt=""
+                            />
                         </div>
-                        <div class="d-flex flex-grow-1 flex-column ml-md-4">
+                        <div class="d-flex flex-grow-1 flex-column ml-lg-4">
                             <div
-                                class="title-container mt-2 my-md-0 d-flex items-start"
+                                class="title-container mt-2 my-lg-0 d-flex items-start"
                             >
                                 <h6 @click="showArticle(article)">
                                     {{ article.title.substr(0, 50) }}...
                                 </h6>
-
-                                <!-- <router-link
-                                    :to="{
-                                        name: 'article',
-                                        params: { shownArticle: article },
-                                    }"
-                                >
-                                    <h6>
-                                        {{ article.title.substr(0, 50) }}...
-                                    </h6>
-                                </router-link> -->
                             </div>
-                            <div class="d-flex align-items-end h-100">
+                            <div class="">
+                                <small class="align-top date px-1 border">{{
+                                    article.created_at
+                                }}</small>
+                            </div>
+                            <div class="category d-flex align-items-end h-100">
+                                <small class="text-capitalize">{{
+                                    article.category
+                                }}</small>
+                            </div>
+                            <!-- <div class="d-flex align-items-end h-100">
                                 <small
                                     v-for="tag in article.tags_array"
                                     :key="tag"
                                     class="d-inline text-center font-weight-bold tag p-1 rounded mr-1"
                                     >{{ tag }}</small
                                 >
-                            </div>
+                            </div> -->
                         </div>
-                        <div class="">
-                            <small class="align-top date px-1 border">{{
-                                article.created_at
-                            }}</small>
-                        </div>
-                    </div>
+                    </a>
 
                     <scroll-loader
                         v-if="loadMore"
@@ -150,5 +150,16 @@ export default {
 }
 .date {
     color: #7e7e7e;
+}
+.category {
+    color: rgb(151, 151, 151);
+}
+.article {
+    cursor: pointer;
+    color: #2d2d2d;
+}
+.article:hover {
+    text-decoration: none;
+    color: #000;
 }
 </style>

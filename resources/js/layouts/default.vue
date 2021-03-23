@@ -22,6 +22,6 @@ export default {
 
 <style>
 body {
-    font-family: 'Roboto', sans-serif;
+    font-family: Arial, Helvetica, sans-serif;
 }
 </style>

@@ -18,12 +18,11 @@ class CreateArticlesTable extends Migration
             $table->string('title');
             $table->string('tags');
             $table->string('youtube_id');
-            $table->string('youtube_link');
+            $table->string('link', 1000)->default('#');
             $table->string('youtube_img');
             $table->longText('content');
             $table->string('category');
             $table->string('image')->nullable();
-            $table->string('external_image')->nullable();
             $table->boolean('selected')->default(false);
             $table->timestamps();
         });

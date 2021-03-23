@@ -3,42 +3,39 @@
 namespace App\Http\Controllers;
 
 use App\Models\Article;
+use Exception;
 use Illuminate\Http\Request;
 use Intervention\Image\ImageManagerStatic as Image;
-use Monolog\Handler\PushoverHandler;
 
 class ArticlesController extends Controller
 {
     public function postArticle(Request $request)
     {
-        if ($request->hasFile('image')) {
-            $article_image_name = $request->image->getClientOriginalName();
-            $image = Image::make($request->image)->fit(185, 275);
-            $path = storage_path('app');
-            $image->save($path . '/public/uploads/' . $article_image_name, 100);
-        } else {
-            $article_image_name = "";
-        }
+        //saving image
+        $article_image_name = ArticlesController::getImage($request->image);
+        // getting youtube link and tag from it to get the thumbnail 
         $article = json_decode($request->article);
+        $link = $article->link;
+        $youtube = ArticlesController::getLink($link);
 
-        $youtube_link = "https://youtu.be/" . $article->youtubeId;
-        $youtube_img = "https://img.youtube.com/vi/" . $article->youtubeId . "/0.jpg";
-
+        // preparing article to be saved in database
         $article = [
             "title" => $article->title,
             "tags" => $article->tags,
-            "youtube_id" => $article->youtubeId,
-            "youtube_link" => $youtube_link,
-            "youtube_img" => $youtube_img,
+            "youtube_id" => $youtube['youtube_id'],
+            "link" => $link,
+            "youtube_img" => $youtube['youtube_img'],
             "content" => $article->content,
             "category" => $article->category,
             "image" => $article_image_name,
-            "external_image" => $article->externalImage
         ];
+        // dd($article);
         Article::create($article);
 
         return  ["message" => "success"];
     }
+
+
     // used for display articles in listarticles.vue table
     public function getArticles()
     {
@@ -78,5 +75,69 @@ class ArticlesController extends Controller
         $article = Article::find($id);
         $article->delete();
         return ["success"];
+    }
+
+    public static function getLink($link)
+    {
+        if ($link) {
+            parse_str(parse_url($link, PHP_URL_QUERY), $vars_array);
+            if (array_key_exists('v', $vars_array)) {
+                $youtube_id = $vars_array['v'];
+                $youtube_img = "https://img.youtube.com/vi/" . $youtube_id . "/0.jpg";
+            } else {
+                $youtube_id = "";
+                $youtube_img = "";
+            }
+        }
+        return ['youtube_id' => $youtube_id, 'youtube_img' => $youtube_img];
+    }
+
+    public static function getImage($image)
+    {
+        if ($image) {
+            $client_name = $image->getClientOriginalName();
+            $image = Image::make($image)->fit(330, 480);
+            $path = storage_path('app');
+            $image_name = strtotime(date('Y/m/d H:i:s')) . '-' . $client_name;
+            $image_path = $path . '/public/uploads/'  . $image_name;
+            $image->save($image_path, 100);
+        } else {
+            $image_name = "";
+        }
+        return $image_name;
+    }
+
+    public function updateArticle(Request $request)
+    {
+        $article =  json_decode($request->article);
+
+        $db_article = Article::find($article->id);
+
+        $db_article->title = $article->title;
+        $db_article->tags = $article->tags;
+        $db_article->link = $article->link;
+        $db_article->content = $article->content;
+        $db_article->category = $article->category;
+
+        // deleting old image
+        try {
+            $path = storage_path('app');
+            $old_image_path = $path . '/public/uploads/' . $db_article->image;
+            unlink($old_image_path);
+        } catch (Exception $e) {
+        }
+
+        if ($request->hasFile(('image'))) {
+            $article_image_name = ArticlesController::getImage($request->image);
+            $db_article->image = $article_image_name;
+        }
+
+        $youtube =  ArticlesController::getLink($article->link);
+        $db_article->youtube_id = $youtube['youtube_id'];
+        $db_article->youtube_img = $youtube['youtube_img'];
+
+        $db_article->save();
+
+        return ['message' => 'success'];
     }
 }

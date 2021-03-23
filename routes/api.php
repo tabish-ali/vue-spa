@@ -35,6 +35,7 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::get('get-articles/', [ArticlesController::class, 'getArticles']);
     Route::post('delete-articles/', [ArticlesController::class, 'deleteArticles']);
     Route::post('delete-article/', [ArticlesController::class, 'deleteArticle']);
+    Route::post('update-article/', [ArticlesController::class, 'updateArticle']);
 });
 
 Route::get('index/', [ArticlesController::class, 'index']);

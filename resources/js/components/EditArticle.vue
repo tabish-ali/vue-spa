@@ -26,10 +26,10 @@
                     />
                 </div>
                 <div class="form-group w-100 px-md-1">
-                    <label class="form-label" for="">Youtube ID</label>
+                    <label class="form-label" for="">Link</label>
                     <input
                         type="text"
-                        v-model="article.youtube_id"
+                        v-model="article.link"
                         class="form-control"
                         value="article.youtube_id"
                     />
@@ -74,7 +74,7 @@
                     <div class="border">
                         <input
                             type="file"
-                            @change="updateImage"
+                            @change="getImage"
                             class=""
                             size="60"
                         />
@@ -92,11 +92,12 @@
             </div>
             <hr />
             <div class="form-group mt-3 mb-5 d-flex justify-content-center">
-                <button @click="updateArticle" class="btn shadow btn-dark">
+                <button @click="updateArticle" class="btn shadow btn-primary">
                     <b-spinner
-                        v-if="uploading"
+                        small
+                        label="Small Spinner"
                         type="grow"
-                        label="Spinning"
+                        v-if="uploading"
                     ></b-spinner>
                     Update
                 </button>
@@ -107,6 +108,8 @@
 
 <script>
 import Editor from '@tinymce/tinymce-vue'
+import axios from 'axios'
+
 export default {
     props: ['selectedArticle'],
     components: { Editor },
@@ -121,17 +124,37 @@ export default {
     created() {
         this.article = this.selectedArticle
     },
-
-    // watch: {
-    //     selectedArticle: function(val) {
-    //         this.article = val
-    //         console.log(this.article)
-    //     },
-    // },
     methods: {
-        updateArticle() {},
+        async updateArticle() {
+            try {
+                this.loading = true
+                var formData = new FormData()
+                formData.append('image', this.article.image)
+                formData.append('article', JSON.stringify(this.article))
+                console.log(this.article)
+                const response = await axios.post(
+                    'api/update-article',
+                    formData
+                )
+                this.uploading = false
+                let toast = this.$toasted.show(
+                    'Article updated successfully !!',
+                    {
+                        type: 'success',
+                        position: 'top-center',
+                        duration: 5000,
+                    }
+                )
+            } catch (err) {
+                console.log(err)
+            }
+        },
 
-        updateImage() {},
+        getImage(e) {
+            var files = e.target.files
+            this.article.image = files[0]
+            console.log(this.article.image)
+        },
     },
 }
 </script>

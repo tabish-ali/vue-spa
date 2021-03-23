@@ -2,7 +2,7 @@
     <div class="article-form w-100 h-100">
         <form
             @submit.prevent
-            class="shadow p-3 rounded h-100 bg-white"
+            class="p-3 rounded h-100 bg-white"
             enctype="multipart/form-data"
         >
             <div class="form-group p-1">
@@ -24,14 +24,13 @@
                     />
                 </div>
                 <div class="form-group w-100 px-md-1">
-                    <label class="form-label" for="">Youtube ID</label>
+                    <label class="form-label" for="">Link</label>
                     <input
                         type="text"
-                        v-model="article.youtubeId"
+                        v-model="article.link"
                         class="form-control"
                     />
-
-                    <span class="errors">{{ errors.youtubeId }}</span>
+                    <span class="errors">{{ errors.link }}</span>
                 </div>
                 <div class="form-group w-100 px-md-1">
                     <label class="form-label" for="">Select Category</label>
@@ -40,6 +39,7 @@
                         v-model="article.category"
                         class="form-control"
                     />
+                    <span class="errors">{{ errors.category }}</span>
                 </div>
             </div>
             <!---editor-->
@@ -75,22 +75,15 @@
                         />
                     </div>
                 </div>
-                <div class="w-100 form-group px-1">
-                    <label class="form-label">External image link</label>
-                    <input
-                        v-model="article.externalImage"
-                        type="text"
-                        class="form-control"
-                    />
-                </div>
             </div>
             <hr />
             <div class="form-group mt-3 mb-5 d-flex justify-content-center">
-                <button @click="saveArticle" class="btn shadow btn-dark">
+                <button @click="saveArticle" class="btn shadow-lg btn-success">
                     <b-spinner
-                        v-if="uploading"
+                        small
+                        label="Small Spinner"
                         type="grow"
-                        label="Spinning"
+                        v-if="uploading"
                     ></b-spinner>
                     Add Article
                 </button>
@@ -111,11 +104,10 @@ export default {
             article: {
                 title: '',
                 tags: '',
-                youtubeId: '',
+                link: '',
                 content: '',
                 category: '',
                 image: '',
-                externalImage: '',
             },
             errors: {},
             uploading: false,
@@ -152,7 +144,6 @@ export default {
                 } catch (error) {
                     console.log(error)
                 }
-                this.uploading = false
             }
         },
 
@@ -166,11 +157,11 @@ export default {
             if (!this.article.title) {
                 this.errors.title = 'Please enter the title.'
             }
-            // if (!this.article.content) {
-            //     this.errors.push('please enter the content.')
-            // }
-            if (!this.article.youtubeId) {
-                this.errors.youtubeId = 'Please enter the Youtube Id.'
+            if (!this.article.category) {
+                this.errors.category = 'Please select category.'
+            }
+            if (!this.article.link) {
+                this.errors.link = 'Please enter the Link.'
             }
         },
     },
