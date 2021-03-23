@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Article extends Model
 {
     use HasFactory;
-    protected $dates = ['created_at, updated_at'];
+    protected $dates = ['created_at, updated_at', 'selected'];
     protected $fillable = [
         'title',
         'tags',
@@ -24,5 +24,10 @@ class Article extends Model
     {
         $newDate = date("F j, Y", strtotime($value));
         return $newDate;
+    }
+
+    public function getSelectedAttribute($value)
+    {
+        return filter_var($value, FILTER_VALIDATE_BOOLEAN);
     }
 }
